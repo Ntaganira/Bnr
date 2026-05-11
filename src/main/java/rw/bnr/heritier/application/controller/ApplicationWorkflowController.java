@@ -3,6 +3,9 @@ package rw.bnr.heritier.application.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import rw.bnr.heritier.application.dto.ApplicationResponseDto;
+import rw.bnr.heritier.application.mapper.ApplicationMapper;
 import rw.bnr.heritier.application.model.LicenseApplication;
 import rw.bnr.heritier.application.service.ApplicationWorkflowService;
 import rw.bnr.heritier.common.security.SecurityUtils;
@@ -11,11 +14,11 @@ import rw.bnr.heritier.user.repository.UserRepository;
 
 /**
  * --------------------------------------------------------------------
- * Project      : Bank Licensing Portal
- * File         : ApplicationWorkflowController.java
- * Author       : Heritier Ntaganira
+ * Project : Bank Licensing Portal
+ * File : ApplicationWorkflowController.java
+ * Author : Heritier Ntaganira
  * Created Date : 2026-05-11
- * Description  : Handles application workflow operations
+ * Description : Handles application workflow operations
  * --------------------------------------------------------------------
  */
 
@@ -24,60 +27,59 @@ import rw.bnr.heritier.user.repository.UserRepository;
 @RequiredArgsConstructor
 public class ApplicationWorkflowController {
 
-    private final ApplicationWorkflowService workflowService;
-    private final UserRepository userRepository;
+        private final ApplicationWorkflowService workflowService;
+        private final UserRepository userRepository;
+        private final ApplicationMapper applicationMapper;
 
-    @PostMapping("/{id}/submit")
-    @PreAuthorize("hasRole('APPLICANT')")
-    public LicenseApplication submit(
-            @PathVariable Long id
-    ) {
+        @PostMapping("/{id}/submit")
+        @PreAuthorize("hasRole('APPLICANT')")
+        public ApplicationResponseDto submit(
+                        @PathVariable Long id) {
 
-        return workflowService.submit(id);
-    }
+                return applicationMapper.toResponse(
+                                workflowService.submit(id));
+        }
 
-    @PostMapping("/{id}/review")
-    @PreAuthorize("hasRole('REVIEWER')")
-    public LicenseApplication startReview(
-            @PathVariable Long id
-    ) {
+        @PostMapping("/{id}/review")
+        @PreAuthorize("hasRole('REVIEWER')")
+        public ApplicationResponseDto startReview(
+                        @PathVariable Long id) {
 
-        User reviewer = getCurrentUser();
+                User reviewer = getCurrentUser();
 
-        return workflowService.startReview(id, reviewer);
-    }
+                return applicationMapper.toResponse(
+                                workflowService.startReview(id, reviewer));
+        }
 
-    @PostMapping("/{id}/approve")
-    @PreAuthorize("hasRole('APPROVER')")
-    public LicenseApplication approve(
-            @PathVariable Long id
-    ) {
+        @PostMapping("/{id}/approve")
+        @PreAuthorize("hasRole('APPROVER')")
+        public ApplicationResponseDto approve(
+                        @PathVariable Long id) {
 
-        User approver = getCurrentUser();
+                User approver = getCurrentUser();
 
-        return workflowService.approve(id, approver);
-    }
+                return applicationMapper.toResponse(
+                                workflowService.approve(id, approver));
+        }
 
-    @PostMapping("/{id}/reject")
-    @PreAuthorize("hasRole('APPROVER')")
-    public LicenseApplication reject(
-            @PathVariable Long id
-    ) {
+        @PostMapping("/{id}/reject")
+        @PreAuthorize("hasRole('APPROVER')")
+        public ApplicationResponseDto reject(
+                        @PathVariable Long id) {
 
-        User approver = getCurrentUser();
+                User approver = getCurrentUser();
 
-        return workflowService.reject(id, approver);
-    }
+                return applicationMapper.toResponse(
+                                workflowService.reject(id, approver));
+        }
 
-    private User getCurrentUser() {
+        private User getCurrentUser() {
 
-        String email = SecurityUtils.getCurrentUserEmail();
+                String email = SecurityUtils.getCurrentUserEmail();
 
-        return userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Authenticated user not found"
-                        ));
-    }
+                return userRepository.findByEmail(email)
+                                .orElseThrow(() -> new RuntimeException(
+                                                "Authenticated user not found"));
+        }
 
 }
