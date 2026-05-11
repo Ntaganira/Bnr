@@ -36,7 +36,7 @@ server:
   port: 8080
 
 jwt:
-  secret: verySecretKeyForJwtTokenGenerationMustBeLongEnough
+  secret: verySecretKeyForJwtTokenGenerationMustBeLongEnough123456789
   expiration: 86400000
 
 app:
