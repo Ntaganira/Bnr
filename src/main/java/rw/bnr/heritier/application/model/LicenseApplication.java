@@ -2,6 +2,7 @@ package rw.bnr.heritier.application.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import rw.bnr.heritier.application.workflow.ApplicationStatus;
 import rw.bnr.heritier.user.model.*;
 
 import java.time.LocalDateTime;

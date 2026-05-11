@@ -1,5 +1,15 @@
 package rw.bnr.heritier.application.service.impl;
 
+/**
+ * --------------------------------------------------------------------
+ * Project      : Bank Licensing Portal
+ * File         : ApplicationWorkflowServiceImpl.java
+ * Author       : Heritier Ntaganira
+ * Created Date : 2026-05-11
+ * Description  : Handles workflow state transitions
+ * --------------------------------------------------------------------
+ */
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,4 +1,4 @@
-package rw.bnr.heritier.application.model;
+package rw.bnr.heritier.application.workflow;
 
 public enum ApplicationStatus {
 
