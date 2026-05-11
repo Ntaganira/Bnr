@@ -1,15 +1,5 @@
 package rw.bnr.heritier.application.service.impl;
 
-/**
- * --------------------------------------------------------------------
- * Project      : Bank Licensing Portal
- * File         : ApplicationWorkflowServiceImpl.java
- * Author       : Heritier Ntaganira
- * Created Date : 2026-05-11
- * Description  : Handles workflow state transitions
- * --------------------------------------------------------------------
- */
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,200 +10,238 @@ import rw.bnr.heritier.application.workflow.ApplicationStatus;
 import rw.bnr.heritier.exception.BusinessException;
 import rw.bnr.heritier.role.Role;
 import rw.bnr.heritier.user.model.User;
+import rw.bnr.heritier.audit.service.AuditLogService;
+
+/**
+ * --------------------------------------------------------------------
+ * Project : Bank Licensing Portal
+ * File : ApplicationWorkflowServiceImpl.java
+ * Author : Heritier Ntaganira
+ * Created Date : 2026-05-11
+ * Description : Handles workflow state transitions
+ * --------------------------------------------------------------------
+ */
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class ApplicationWorkflowServiceImpl
-        implements ApplicationWorkflowService {
+                implements ApplicationWorkflowService {
 
-    private final LicenseApplicationRepository repository;
+        private final LicenseApplicationRepository repository;
+        private final AuditLogService auditLogService;
 
-    @Override
-    public LicenseApplication submit(Long id) {
+        @Override
+        public LicenseApplication submit(Long id) {
 
-        LicenseApplication app = getApplication(id);
+                LicenseApplication app = getApplication(id);
 
-        validateTransition(
-                app.getStatus(),
-                ApplicationStatus.SUBMITTED
-        );
+                ApplicationStatus previousState = app.getStatus();
 
-        app.setStatus(ApplicationStatus.SUBMITTED);
+                validateTransition(
+                                previousState,
+                                ApplicationStatus.SUBMITTED);
 
-        return repository.save(app);
-    }
+                app.setStatus(ApplicationStatus.SUBMITTED);
 
-    @Override
-    public LicenseApplication startReview(
-            Long id,
-            User reviewer
-    ) {
+                LicenseApplication saved = repository.save(app);
 
-        LicenseApplication app = getApplication(id);
+                auditLogService.log(
+                                saved.getId(),
+                                saved.getApplicant().getEmail(),
+                                "SUBMIT_APPLICATION",
+                                previousState.name(),
+                                saved.getStatus().name());
 
-        if (reviewer.getRole() != Role.REVIEWER) {
-
-            throw new BusinessException(
-                    "Only reviewers can review applications"
-            );
+                return saved;
         }
 
-        validateTransition(
-                app.getStatus(),
-                ApplicationStatus.UNDER_REVIEW
-        );
+        @Override
+        public LicenseApplication startReview(
+                        Long id,
+                        User reviewer) {
 
-        app.setReviewer(reviewer);
+                LicenseApplication app = getApplication(id);
 
-        app.setStatus(ApplicationStatus.UNDER_REVIEW);
+                if (reviewer.getRole() != Role.REVIEWER) {
 
-        return repository.save(app);
-    }
+                        throw new BusinessException(
+                                        "Only reviewers can review applications");
+                }
 
-    @Override
-    public LicenseApplication requestMoreInfo(Long id) {
+                ApplicationStatus previousState = app.getStatus();
 
-        LicenseApplication app = getApplication(id);
+                validateTransition(
+                                previousState,
+                                ApplicationStatus.UNDER_REVIEW);
 
-        validateTransition(
-                app.getStatus(),
-                ApplicationStatus.NEEDS_MORE_INFO
-        );
+                app.setReviewer(reviewer);
 
-        app.setStatus(ApplicationStatus.NEEDS_MORE_INFO);
+                app.setStatus(ApplicationStatus.UNDER_REVIEW);
 
-        return repository.save(app);
-    }
+                LicenseApplication saved = repository.save(app);
 
-    @Override
-    public LicenseApplication completeReview(Long id) {
+                auditLogService.log(
+                                saved.getId(),
+                                reviewer.getEmail(),
+                                "START_REVIEW",
+                                previousState.name(),
+                                saved.getStatus().name());
 
-        LicenseApplication app = getApplication(id);
-
-        validateTransition(
-                app.getStatus(),
-                ApplicationStatus.REVIEW_COMPLETED
-        );
-
-        app.setStatus(ApplicationStatus.REVIEW_COMPLETED);
-
-        return repository.save(app);
-    }
-
-    @Override
-    public LicenseApplication approve(
-            Long id,
-            User approver
-    ) {
-
-        LicenseApplication app = getApplication(id);
-
-        if (approver.getRole() != Role.APPROVER) {
-
-            throw new BusinessException(
-                    "Only approvers can approve applications"
-            );
+                return saved;
         }
 
-        if (app.getReviewer() != null
-                && app.getReviewer().getId()
-                .equals(approver.getId())) {
+        @Override
+        public LicenseApplication requestMoreInfo(Long id) {
 
-            throw new BusinessException(
-                    "Reviewer cannot approve same application"
-            );
+                LicenseApplication app = getApplication(id);
+
+                validateTransition(
+                                app.getStatus(),
+                                ApplicationStatus.NEEDS_MORE_INFO);
+
+                app.setStatus(ApplicationStatus.NEEDS_MORE_INFO);
+
+                return repository.save(app);
         }
 
-        validateTransition(
-                app.getStatus(),
-                ApplicationStatus.APPROVED
-        );
+        @Override
+        public LicenseApplication completeReview(Long id) {
 
-        app.setApprover(approver);
+                LicenseApplication app = getApplication(id);
 
-        app.setStatus(ApplicationStatus.APPROVED);
+                validateTransition(
+                                app.getStatus(),
+                                ApplicationStatus.REVIEW_COMPLETED);
 
-        return repository.save(app);
-    }
+                app.setStatus(ApplicationStatus.REVIEW_COMPLETED);
 
-    @Override
-    public LicenseApplication reject(
-            Long id,
-            User approver
-    ) {
-
-        LicenseApplication app = getApplication(id);
-
-        validateTransition(
-                app.getStatus(),
-                ApplicationStatus.REJECTED
-        );
-
-        app.setApprover(approver);
-
-        app.setStatus(ApplicationStatus.REJECTED);
-
-        return repository.save(app);
-    }
-
-    private void validateTransition(
-            ApplicationStatus current,
-            ApplicationStatus target
-    ) {
-
-        if (current == ApplicationStatus.APPROVED
-                || current == ApplicationStatus.REJECTED) {
-
-            throw new BusinessException(
-                    "Finalized applications cannot be modified"
-            );
+                return repository.save(app);
         }
 
-        boolean valid = switch (current) {
+        @Override
+        public LicenseApplication approve(
+                        Long id,
+                        User approver) {
 
-            case DRAFT ->
-                    target == ApplicationStatus.SUBMITTED;
+                LicenseApplication app = getApplication(id);
 
-            case SUBMITTED ->
-                    target == ApplicationStatus.UNDER_REVIEW;
+                if (approver.getRole() != Role.APPROVER) {
 
-            case UNDER_REVIEW ->
-                    target == ApplicationStatus.NEEDS_MORE_INFO
-                            || target == ApplicationStatus.REVIEW_COMPLETED;
+                        throw new BusinessException(
+                                        "Only approvers can approve applications");
+                }
 
-            case NEEDS_MORE_INFO ->
-                    target == ApplicationStatus.RESUBMITTED;
+                if (app.getReviewer() != null
+                                && app.getReviewer().getId()
+                                                .equals(approver.getId())) {
 
-            case RESUBMITTED ->
-                    target == ApplicationStatus.UNDER_REVIEW;
+                        throw new BusinessException(
+                                        "Reviewer cannot approve same application");
+                }
 
-            case REVIEW_COMPLETED ->
-                    target == ApplicationStatus.APPROVED
-                            || target == ApplicationStatus.REJECTED;
+                ApplicationStatus previousState = app.getStatus();
 
-            default -> false;
-        };
+                validateTransition(
+                                previousState,
+                                ApplicationStatus.APPROVED);
 
-        if (!valid) {
+                app.setApprover(approver);
 
-            throw new BusinessException(
-                    String.format(
-                            "Invalid transition from %s to %s",
-                            current,
-                            target
-                    )
-            );
+                app.setStatus(ApplicationStatus.APPROVED);
+
+                LicenseApplication saved = repository.save(app);
+
+                auditLogService.log(
+                                saved.getId(),
+                                approver.getEmail(),
+                                "APPROVE_APPLICATION",
+                                previousState.name(),
+                                saved.getStatus().name());
+
+                return saved;
         }
-    }
 
-    private LicenseApplication getApplication(Long id) {
+        @Override
+        public LicenseApplication reject(
+                        Long id,
+                        User approver) {
 
-        return repository.findById(id)
-                .orElseThrow(() ->
-                        new BusinessException(
-                                "Application not found"
-                        ));
-    }
+                LicenseApplication app = getApplication(id);
+
+                ApplicationStatus previousState = app.getStatus();
+
+                validateTransition(
+                                previousState,
+                                ApplicationStatus.REJECTED);
+
+                app.setApprover(approver);
+
+                app.setStatus(ApplicationStatus.REJECTED);
+
+                LicenseApplication saved = repository.save(app);
+
+                auditLogService.log(
+                                saved.getId(),
+                                approver.getEmail(),
+                                "REJECT_APPLICATION",
+                                previousState.name(),
+                                saved.getStatus().name());
+
+                return saved;
+        }
+
+        private void validateTransition(
+                        ApplicationStatus current,
+                        ApplicationStatus target) {
+
+                if (current == ApplicationStatus.APPROVED
+                                || current == ApplicationStatus.REJECTED) {
+
+                        throw new BusinessException(
+                                        "Finalized applications cannot be modified");
+                }
+
+                boolean valid = switch (current) {
+
+                        case DRAFT ->
+                                target == ApplicationStatus.SUBMITTED;
+
+                        case SUBMITTED ->
+                                target == ApplicationStatus.UNDER_REVIEW;
+
+                        case UNDER_REVIEW ->
+                                target == ApplicationStatus.NEEDS_MORE_INFO
+                                                || target == ApplicationStatus.REVIEW_COMPLETED;
+
+                        case NEEDS_MORE_INFO ->
+                                target == ApplicationStatus.RESUBMITTED;
+
+                        case RESUBMITTED ->
+                                target == ApplicationStatus.UNDER_REVIEW;
+
+                        case REVIEW_COMPLETED ->
+                                target == ApplicationStatus.APPROVED
+                                                || target == ApplicationStatus.REJECTED;
+
+                        default -> false;
+                };
+
+                if (!valid) {
+
+                        throw new BusinessException(
+                                        String.format(
+                                                        "Invalid transition from %s to %s",
+                                                        current,
+                                                        target));
+                }
+        }
+
+        private LicenseApplication getApplication(Long id) {
+
+                return repository.findById(id)
+                                .orElseThrow(() -> new BusinessException(
+                                                "Application not found"));
+        }
 
 }
