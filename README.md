@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/banner.png" alt="Bank Licensing Portal Banner" width="100%">
+</p>
+
 # Bank Licensing & Compliance Portal
 
 ## Overview
