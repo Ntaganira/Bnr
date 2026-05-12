@@ -93,6 +93,15 @@ public class DocumentServiceImpl implements DocumentService {
                                 .toList();
         }
 
+        @Override
+        public ApplicationDocument getDocument(
+                        Long documentId) {
+
+                return repository.findById(documentId)
+                                .orElseThrow(() -> new BusinessException(
+                                                "Document not found"));
+        }
+
         private void validateFile(MultipartFile file) {
 
                 if (file.isEmpty()) {

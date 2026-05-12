@@ -8,7 +8,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import rw.bnr.heritier.application.dto.ApplicationResponseDto;
 import rw.bnr.heritier.application.service.ApplicationQueryService;
+import rw.bnr.heritier.document.model.ApplicationDocument;
 import rw.bnr.heritier.document.service.DocumentService;
+import rw.bnr.heritier.exception.BusinessException;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * --------------------------------------------------------------------
@@ -62,4 +72,34 @@ public class ApplicationViewController {
                 return "applications/details";
         }
 
+        @GetMapping("/documents/{id}/download")
+        public ResponseEntity<Resource> downloadDocument(
+                        @PathVariable Long id) {
+
+                try {
+
+                        ApplicationDocument document = documentService.getDocument(id);
+
+                        Path filePath = Paths.get("uploads")
+                                        .resolve(
+                                                        document.getStoredFileName());
+
+                        Resource resource = new UrlResource(filePath.toUri());
+
+                        return ResponseEntity.ok()
+
+                                        .header(
+                                                        HttpHeaders.CONTENT_DISPOSITION,
+                                                        "attachment; filename=\""
+                                                                        + document.getOriginalFileName()
+                                                                        + "\"")
+
+                                        .body(resource);
+
+                } catch (Exception ex) {
+
+                        throw new BusinessException(
+                                        "Failed to download document");
+                }
+        }
 }

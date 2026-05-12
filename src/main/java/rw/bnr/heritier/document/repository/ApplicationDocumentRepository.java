@@ -27,4 +27,7 @@ public interface ApplicationDocumentRepository
 
         int countByApplicationId(Long applicationId);
 
+        Optional<ApplicationDocument> findById(
+                        Long id);
+
 }

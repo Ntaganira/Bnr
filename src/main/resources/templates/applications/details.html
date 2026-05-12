@@ -313,6 +313,10 @@
                                                     Uploaded At
                                                 </th>
 
+                                                <th>
+                                                    Action
+                                                </th>
+
                                             </tr>
 
                                         </thead>
@@ -331,7 +335,16 @@
 
                                             <tr th:each="doc : ${documents}">
 
-                                                <td th:text="${doc.fileName}">
+                                                <td>
+
+                                                    <a th:href="@{/documents/{id}/download(
+            id=${doc.id})}" class="text-decoration-none fw-semibold">
+
+                                                        <span th:text="${doc.fileName}">
+                                                        </span>
+
+                                                    </a>
+
                                                 </td>
 
                                                 <td>
@@ -347,7 +360,18 @@
 
                                                 <td th:text="${doc.uploadedAt}">
                                                 </td>
+                                                <td>
 
+                                                    <a th:href="@{/documents/{id}/download(
+            id=${doc.id})}" class="text-decoration-none fw-semibold">
+
+                                                        <span>
+                                                            Download
+                                                        </span>
+
+                                                    </a>
+
+                                                </td>
                                             </tr>
 
                                         </tbody>

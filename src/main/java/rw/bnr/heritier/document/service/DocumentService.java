@@ -30,4 +30,7 @@ public interface DocumentService {
 
     List<DocumentResponseDto> getDocumentsByApplication(
             Long applicationId);
+
+    ApplicationDocument getDocument(
+            Long documentId);
 }
