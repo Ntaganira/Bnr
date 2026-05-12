@@ -1,0 +1,92 @@
+:root {
+
+    --primary-color: #8B4513;
+    --primary-dark: #6E3410;
+
+    --background-color: #F8F5EC;
+    --sidebar-color: #6E3410;
+
+    --border-color: #DDD5C3;
+
+    --text-color: #2F2F2F;
+
+}
+
+body.bg-light {
+
+    background-color: var(--background-color)!important;
+    color: var(--text-color);
+
+}
+
+.navbar-custom {
+
+    background-color: white;
+    border-bottom: 1px solid var(--border-color);
+
+}
+
+.sidebar-custom {
+
+    background-color: var(--sidebar-color);
+
+}
+
+.sidebar-custom .nav-link {
+
+    color: white;
+
+}
+
+.sidebar-custom .nav-link:hover {
+
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 6px;
+
+}
+
+.btn-primary-custom {
+
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+
+}
+
+.btn-primary-custom:hover {
+
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+
+}
+
+.card-custom {
+
+    border: none;
+    border-radius: 12px;
+
+}
+
+.btn-dark:hover {
+
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+
+}
+
+.btn-dark {
+
+    background-color: var(--primary-color);
+    border-color: var(--primary-dark);
+
+}
+
+h1, h2,h3,h4,h5,h6{
+
+    color: var(--primary-color);
+
+}
+
+.bg-dark{
+    background-color: var(--primary-dark)!important;
+}

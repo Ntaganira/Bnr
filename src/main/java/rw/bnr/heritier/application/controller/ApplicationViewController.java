@@ -5,8 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import rw.bnr.heritier.application.dto.ApplicationResponseDto;
 import rw.bnr.heritier.application.service.ApplicationQueryService;
 /**
@@ -26,6 +25,7 @@ public class ApplicationViewController {
 
     @GetMapping("/applications")
     public String applications(
+
             @RequestParam(defaultValue = "0")
             int page,
 
@@ -46,6 +46,23 @@ public class ApplicationViewController {
         );
 
         return "applications/list";
+    }
+
+    @GetMapping("/applications/{id}")
+    public String applicationDetails(
+            @PathVariable Long id,
+            Model model
+    ) {
+
+        ApplicationResponseDto application =
+                queryService.getApplicationById(id);
+
+        model.addAttribute(
+                "application",
+                application
+        );
+
+        return "applications/details";
     }
 
 }

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
+<head>
+    <link rel="stylesheet"
+      th:href="@{/css/app.css}">
+</head>
 <body>
 
     <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom shadow-sm">
@@ -52,8 +55,7 @@
 
                         Signed in as
 
-                        <strong th:text="${#authentication.name}">
-                        </strong>
+                        <strong th:text="${#authentication != null ? #authentication.name : 'Guest'}"></strong>
 
                     </span>
 

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>
+        Application Details
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+
+</head>
+
+<body class="bg-light">
+
+    <div th:replace="~{fragments/navbar :: navbar}">
+    </div>
+
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <div class="col-md-2 p-0">
+
+                <div th:replace="~{fragments/sidebar :: sidebar}">
+                </div>
+
+            </div>
+
+            <div class="col-md-10 p-4">
+
+                <div class="d-flex justify-content-between
+                        align-items-center mb-4">
+
+                    <div>
+
+                        <h3 class="fw-bold mb-1">
+
+                            Application Details
+
+                        </h3>
+
+                        <small class="text-muted">
+
+                            Detailed application information
+
+                        </small>
+
+                    </div>
+
+                    <a th:href="@{/applications}" class="btn btn-outline-secondary">
+
+                        Back
+
+                    </a>
+
+                </div>
+
+                <div class="row g-4">
+
+                    <!-- APPLICATION INFORMATION -->
+
+                    <div class="col-lg-8">
+
+                        <div class="card card-custom shadow-sm">
+
+                            <div class="card-body p-4">
+
+                                <h5 class="fw-bold mb-4">
+
+                                    Application Information
+
+                                </h5>
+
+                                <div class="row mb-3">
+
+                                    <div class="col-md-4">
+
+                                        <strong>
+                                            Application Number
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="col-md-8" th:text="${application.applicationNumber}">
+                                    </div>
+
+                                </div>
+
+                                <div class="row mb-3">
+
+                                    <div class="col-md-4">
+
+                                        <strong>
+                                            Institution Name
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="col-md-8" th:text="${application.institutionName}">
+                                    </div>
+
+                                </div>
+
+                                <div class="row mb-3">
+
+                                    <div class="col-md-4">
+
+                                        <strong>
+                                            Applicant
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="col-md-8" th:text="${application.applicantEmail}">
+                                    </div>
+
+                                </div>
+
+                                <div class="row mb-3">
+
+                                    <div class="col-md-4">
+
+                                        <strong>
+                                            Reviewer
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="col-md-8">
+
+                                        <span
+                                            th:text="${application.reviewerEmail != null ? application.reviewerEmail : '-'}">
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="row mb-3">
+
+                                    <div class="col-md-4">
+
+                                        <strong>
+                                            Approver
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="col-md-8">
+
+                                        <span
+                                            th:text="${application.approverEmail != null ? application.approverEmail : '-'}">
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-4">
+
+                                        <strong>
+                                            Submitted At
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="col-md-8" th:text="${application.submittedAt}">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- STATUS CARD -->
+
+                    <div class="col-lg-4">
+
+                        <div class="card card-custom shadow-sm">
+
+                            <div class="card-body p-4">
+
+                                <h5 class="fw-bold mb-4">
+
+                                    Workflow Status
+
+                                </h5>
+
+                                <div class="text-center">
+
+                                    <span class="badge px-4 py-3 fs-6" th:classappend="
+                                        ${application.status == 'APPROVED'} ? ' bg-success' :
+                                        (${application.status == 'REJECTED'} ? ' bg-danger' :
+                                        (${application.status == 'UNDER_REVIEW'} ? ' bg-warning text-dark' :
+                                        (${application.status == 'SUBMITTED'} ? ' bg-primary' :
+                                        ' bg-secondary')))" th:text="${application.status}">
+                                    </span>
+
+                                </div>
+
+                                <hr class="my-4">
+
+                                <div class="d-grid gap-2">
+
+                                    <button class="btn btn-primary-custom">
+
+                                        Upload Document
+
+                                    </button>
+
+                                    <button class="btn btn-outline-secondary">
+
+                                        View Audit Trail
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- DOCUMENTS SECTION -->
+
+                    <div class="col-12">
+
+                        <div class="card card-custom shadow-sm">
+
+                            <div class="card-body p-4">
+
+                                <div class="d-flex justify-content-between
+                                        align-items-center mb-4">
+
+                                    <h5 class="fw-bold mb-0">
+
+                                        Uploaded Documents
+
+                                    </h5>
+
+                                </div>
+
+                                <div class="table-responsive">
+
+                                    <table class="table align-middle">
+
+                                        <thead class="table-light">
+
+                                            <tr>
+
+                                                <th>
+                                                    File Name
+                                                </th>
+
+                                                <th>
+                                                    Version
+                                                </th>
+
+                                                <th>
+                                                    Uploaded By
+                                                </th>
+
+                                                <th>
+                                                    Uploaded At
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+                                        <tbody>
+
+                                            <tr>
+
+                                                <td colspan="4" class="text-center text-muted py-4">
+
+                                                    No uploaded documents yet.
+
+                                                </td>
+
+                                            </tr>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}">
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+</body>
+
+</html>
