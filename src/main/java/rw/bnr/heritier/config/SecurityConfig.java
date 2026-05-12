@@ -1,3 +1,14 @@
+/**
+ * --------------------------------------------------------------------
+ * Project      : Bank Licensing Portal
+ * File         : SecurityConfig.java
+ * Author       : Heritier Ntaganira
+ * Created Date : 2026-05-11
+ * Description  : Configures Spring Security, JWT authentication,
+ *                session authentication, and access control
+ * --------------------------------------------------------------------
+ */
+
 package rw.bnr.heritier.config;
 
 import lombok.RequiredArgsConstructor;
@@ -23,45 +34,76 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config
+            AuthenticationConfiguration configuration
     ) throws Exception {
 
-        return config.getAuthenticationManager();
+        return configuration.getAuthenticationManager();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http
+    ) throws Exception {
 
         http
+
                 .csrf(csrf -> csrf.disable())
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS
+                                SessionCreationPolicy.IF_REQUIRED
                         )
                 )
 
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(
+                                "/login",
                                 "/api/auth/**",
                                 "/h2-console/**",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
-                        ).permitAll()
+                                "/v3/api-docs/**",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**"
+                        )
+                        .permitAll()
 
-                        .anyRequest().authenticated()
+                        .anyRequest()
+                        .authenticated()
                 )
 
-                .headers(headers ->
-                        headers.frameOptions(
-                                frame -> frame.disable()
+                .formLogin(form -> form
+
+                        .loginPage("/login")
+
+                        .defaultSuccessUrl(
+                                "/dashboard",
+                                true
+                        )
+
+                        .permitAll()
+                )
+
+                .logout(logout -> logout
+
+                        .logoutSuccessUrl(
+                                "/login?logout"
+                        )
+
+                        .permitAll()
+                )
+
+                .headers(headers -> headers
+
+                        .frameOptions(frame ->
+                                frame.disable()
                         )
                 )
 

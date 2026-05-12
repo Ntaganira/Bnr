@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+    <div th:fragment="sidebar" class="bg-dark text-white p-3 vh-100">
+
+        <h5 class="mb-4">
+            Navigation
+        </h5>
+
+        <ul class="nav flex-column">
+
+            <li class="nav-item mb-2">
+
+                <a th:href="@{/dashboard}" class="nav-link text-white">
+
+                    Dashboard
+
+                </a>
+
+            </li>
+
+            <li class="nav-item mb-2">
+
+                <a th:href="@{/applications}" class="nav-link text-white">
+
+                    Applications
+
+                </a>
+
+            </li>
+
+            <li class="nav-item mb-2">
+
+                <a href="#" class="nav-link text-white">
+
+                    Audit Logs
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+</body>
+
+</html>
