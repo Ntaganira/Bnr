@@ -239,11 +239,22 @@
 
                                 <div class="d-grid gap-2">
 
-                                    <button class="btn btn-primary-custom">
+                                    <form th:action="@{/applications/{id}/documents(
+        id=${application.id})}" method="post" enctype="multipart/form-data">
 
-                                        Upload Document
+                                        <div class="mb-3">
 
-                                    </button>
+                                            <input type="file" name="file" class="form-control" required>
+
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary-custom w-100">
+
+                                            Upload Document
+
+                                        </button>
+
+                                    </form>
 
                                     <button class="btn btn-outline-secondary">
 

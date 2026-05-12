@@ -35,131 +35,180 @@ import java.util.UUID;
 @Transactional
 public class DocumentServiceImpl implements DocumentService {
 
-    private final ApplicationDocumentRepository repository;
-    private final LicenseApplicationRepository applicationRepository;
-    private final UserRepository userRepository;
+        private final ApplicationDocumentRepository repository;
+        private final LicenseApplicationRepository applicationRepository;
+        private final UserRepository userRepository;
 
-    @Value("${app.upload-dir}")
-    private String uploadDir;
+        @Value("${app.upload-dir}")
+        private String uploadDir;
 
-    @Override
-    public ApplicationDocument upload(
-            Long applicationId,
-            MultipartFile file
-    ) {
+        @Override
+        public ApplicationDocument upload(
+                        Long applicationId,
+                        MultipartFile file) {
 
-        validateFile(file);
+                validateFile(file);
 
-        LicenseApplication application =
-                applicationRepository.findById(applicationId)
-                        .orElseThrow(() ->
-                                new BusinessException(
-                                        "Application not found"
-                                ));
+                LicenseApplication application = applicationRepository.findById(applicationId)
+                                .orElseThrow(() -> new BusinessException(
+                                                "Application not found"));
 
-        User currentUser = getCurrentUser();
+                User currentUser = getCurrentUser();
 
-        int nextVersion = getNextVersion(
-                applicationId,
-                file.getOriginalFilename()
-        );
+                int nextVersion = getNextVersion(
+                                applicationId,
+                                file.getOriginalFilename());
 
-        String storedFileName =
-                UUID.randomUUID() + "_"
-                        + file.getOriginalFilename();
+                String storedFileName = UUID.randomUUID() + "_"
+                                + file.getOriginalFilename();
 
-        saveFile(file, storedFileName);
+                saveFile(file, storedFileName);
 
-        ApplicationDocument document =
-                ApplicationDocument.builder()
-                        .application(application)
-                        .uploadedBy(currentUser)
-                        .originalFileName(
-                                file.getOriginalFilename()
-                        )
-                        .storedFileName(storedFileName)
-                        .contentType(file.getContentType())
-                        .fileSize(file.getSize())
-                        .version(nextVersion)
-                        .uploadedAt(LocalDateTime.now())
-                        .build();
+                ApplicationDocument document = ApplicationDocument.builder()
+                                .application(application)
+                                .uploadedBy(currentUser)
+                                .originalFileName(
+                                                file.getOriginalFilename())
+                                .storedFileName(storedFileName)
+                                .contentType(file.getContentType())
+                                .fileSize(file.getSize())
+                                .version(nextVersion)
+                                .uploadedAt(LocalDateTime.now())
+                                .build();
 
-        return repository.save(document);
-    }
-
-    private void validateFile(MultipartFile file) {
-
-        if (file.isEmpty()) {
-
-            throw new BusinessException(
-                    "Uploaded file cannot be empty"
-            );
+                return repository.save(document);
         }
 
-        long maxSize = 5 * 1024 * 1024;
+        private void validateFile(MultipartFile file) {
 
-        if (file.getSize() > maxSize) {
+                if (file.isEmpty()) {
 
-            throw new BusinessException(
-                    "File size exceeds 5MB limit"
-            );
+                        throw new BusinessException(
+                                        "Uploaded file cannot be empty");
+                }
+
+                long maxSize = 5 * 1024 * 1024;
+
+                if (file.getSize() > maxSize) {
+
+                        throw new BusinessException(
+                                        "File size exceeds 5MB limit");
+                }
         }
-    }
 
-    private int getNextVersion(
-            Long applicationId,
-            String fileName
-    ) {
+        private int getNextVersion(
+                        Long applicationId,
+                        String fileName) {
 
-        return repository
-                .findTopByApplicationIdAndOriginalFileNameOrderByVersionDesc(
-                        applicationId,
-                        fileName
-                )
-                .map(doc -> doc.getVersion() + 1)
-                .orElse(1);
-    }
-
-    private void saveFile(
-            MultipartFile file,
-            String storedFileName
-    ) {
-
-        try {
-
-            Path uploadPath = Paths.get(uploadDir);
-
-            if (!Files.exists(uploadPath)) {
-
-                Files.createDirectories(uploadPath);
-            }
-
-            Path filePath =
-                    uploadPath.resolve(storedFileName);
-
-            Files.copy(
-                    file.getInputStream(),
-                    filePath,
-                    StandardCopyOption.REPLACE_EXISTING
-            );
-
-        } catch (IOException ex) {
-
-            throw new BusinessException(
-                    "Failed to store uploaded document"
-            );
+                return repository
+                                .findTopByApplicationIdAndOriginalFileNameOrderByVersionDesc(
+                                                applicationId,
+                                                fileName)
+                                .map(doc -> doc.getVersion() + 1)
+                                .orElse(1);
         }
-    }
 
-    private User getCurrentUser() {
+        private void saveFile(
+                        MultipartFile file,
+                        String storedFileName) {
 
-        String email = SecurityUtils.getCurrentUserEmail();
+                try {
 
-        return userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new BusinessException(
-                                "Authenticated user not found"
-                        ));
-    }
+                        Path uploadPath = Paths.get(uploadDir);
+
+                        if (!Files.exists(uploadPath)) {
+
+                                Files.createDirectories(uploadPath);
+                        }
+
+                        Path filePath = uploadPath.resolve(storedFileName);
+
+                        Files.copy(
+                                        file.getInputStream(),
+                                        filePath,
+                                        StandardCopyOption.REPLACE_EXISTING);
+
+                } catch (IOException ex) {
+
+                        throw new BusinessException(
+                                        "Failed to store uploaded document");
+                }
+        }
+
+        private User getCurrentUser() {
+
+                String email = SecurityUtils.getCurrentUserEmail();
+
+                return userRepository.findByEmail(email)
+                                .orElseThrow(() -> new BusinessException(
+                                                "Authenticated user not found"));
+        }
+
+        @Override
+        public void uploadDocument(
+                        Long applicationId,
+                        MultipartFile file,
+                        String uploaderEmail) {
+
+                if (file.getSize() > 5 * 1024 * 1024) {
+
+                        throw new BusinessException(
+                                        "File size exceeds maximum limit of 5MB");
+                }
+
+                LicenseApplication application = applicationRepository.findById(applicationId)
+                                .orElseThrow(() -> new BusinessException(
+                                                "Application not found"));
+
+                User uploader = userRepository.findByEmail(uploaderEmail)
+                                .orElseThrow(() -> new BusinessException(
+                                                "Uploader not found"));
+
+                try {
+
+                        Path uploadPath = Paths.get(uploadDir);
+
+                        if (!Files.exists(uploadPath)) {
+
+                                Files.createDirectories(uploadPath);
+                        }
+
+                        String storedFileName = UUID.randomUUID() + "_"
+                                        + file.getOriginalFilename();
+
+                        Path filePath = uploadPath.resolve(storedFileName);
+
+                        Files.copy(
+                                        file.getInputStream(),
+                                        filePath,
+                                        StandardCopyOption.REPLACE_EXISTING);
+
+                        int version = repository.countByApplicationId(
+                                        applicationId) + 1;
+
+                        ApplicationDocument document = ApplicationDocument.builder()
+                                        .originalFileName(
+                                                        file.getOriginalFilename())
+                                        .storedFileName(
+                                                        storedFileName)
+                                        .contentType(
+                                                        file.getContentType())
+                                        .fileSize(
+                                                        file.getSize())
+                                        .version(version)
+                                        .uploadedAt(
+                                                        LocalDateTime.now())
+                                        .uploadedBy(uploader)
+                                        .application(application)
+                                        .build();
+
+                        repository.save(document);
+
+                } catch (IOException ex) {
+
+                        throw new BusinessException(
+                                        "Failed to upload file");
+                }
+        }
 
 }

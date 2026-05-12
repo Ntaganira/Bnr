@@ -20,4 +20,9 @@ public interface DocumentService {
             MultipartFile file
     );
 
+    void uploadDocument(
+            Long applicationId,
+            MultipartFile file,
+            String uploaderEmail
+    );
 }
