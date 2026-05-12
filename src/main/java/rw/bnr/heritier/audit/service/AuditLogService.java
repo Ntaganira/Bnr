@@ -1,12 +1,16 @@
 package rw.bnr.heritier.audit.service;
 
+import java.util.List;
+
+import rw.bnr.heritier.audit.dto.AuditLogResponseDto;
+
 /**
  * --------------------------------------------------------------------
- * Project      : Bank Licensing Portal
- * File         : AuditLogService.java
- * Author       : Heritier Ntaganira
+ * Project : Bank Licensing Portal
+ * File : AuditLogService.java
+ * Author : Heritier Ntaganira
  * Created Date : 2026-05-11
- * Description  : Defines audit logging operations
+ * Description : Defines audit logging operations
  * --------------------------------------------------------------------
  */
 public interface AuditLogService {
@@ -16,7 +20,9 @@ public interface AuditLogService {
             String actorEmail,
             String action,
             String previousState,
-            String newState
-    );
+            String newState);
+
+    List<AuditLogResponseDto> getApplicationAuditLogs(
+            Long applicationId);
 
 }

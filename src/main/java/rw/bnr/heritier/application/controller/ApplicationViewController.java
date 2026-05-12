@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import rw.bnr.heritier.application.dto.ApplicationResponseDto;
 import rw.bnr.heritier.application.service.ApplicationQueryService;
+import rw.bnr.heritier.audit.service.AuditLogService;
 import rw.bnr.heritier.document.model.ApplicationDocument;
 import rw.bnr.heritier.document.service.DocumentService;
 import rw.bnr.heritier.exception.BusinessException;
@@ -35,6 +36,7 @@ public class ApplicationViewController {
 
         private final ApplicationQueryService queryService;
         private final DocumentService documentService;
+        private final AuditLogService auditLogService;
 
         @GetMapping("/applications")
         public String applications(
@@ -69,6 +71,10 @@ public class ApplicationViewController {
                 model.addAttribute(
                                 "documents",
                                 documentService.getDocumentsByApplication(id));
+
+                model.addAttribute(
+                                "auditLogs",
+                                auditLogService.getApplicationAuditLogs(id));
                 return "applications/details";
         }
 
