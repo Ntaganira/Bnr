@@ -1,7 +1,7 @@
 :root {
 
     --primary-color: #8B4513;
-    --primary-dark: #6E3410;
+    --primary-dark: #602e0a;
 
     --background-color: #F8F5EC;
     --sidebar-color: #6E3410;
@@ -89,4 +89,14 @@ h1, h2,h3,h4,h5,h6{
 
 .bg-dark{
     background-color: var(--primary-dark)!important;
+}
+
+.btn.btn-outline-secondary, .btn-outline-dark{
+    background-color: var(--background-color);
+    border-color: var(--primary-dark);
+    color: var(--primary-dark);
+}
+
+.text-dark{
+    color: var(--border-color)!important;
 }

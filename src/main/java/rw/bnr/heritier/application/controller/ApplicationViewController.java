@@ -58,7 +58,7 @@ public class ApplicationViewController {
                 queryService.getApplicationById(id);
 
         model.addAttribute(
-                "application",
+                "app",
                 application
         );
 

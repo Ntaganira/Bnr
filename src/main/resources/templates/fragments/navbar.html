@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"> 
 <head>
     <link rel="stylesheet"
       th:href="@{/css/app.css}">
@@ -51,17 +51,21 @@
 
                 <div class="d-flex align-items-center gap-3">
 
-                    <span class="text-light small">
+                    <span class="text-dark small">
 
                         Signed in as
 
-                        <strong th:text="${#authentication != null ? #authentication.name : 'Guest'}"></strong>
+                        <strong sec:authentication="name">
+                        </strong>
 
                     </span>
 
-                    <form th:action="@{/logout}" method="post" class="m-0">
+                   <form th:action="@{/logout}"
+                        method="post"
+                        class="m-0">
 
-                        <button type="submit" class="btn btn-outline-light btn-sm">
+                        <button type="submit"
+                                class="btn btn-outline-dark btn-sm">
 
                             Logout
 
