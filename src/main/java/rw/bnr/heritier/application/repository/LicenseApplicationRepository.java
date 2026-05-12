@@ -5,13 +5,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import rw.bnr.heritier.application.model.LicenseApplication;
+import rw.bnr.heritier.application.workflow.ApplicationStatus;
+
 /**
  * --------------------------------------------------------------------
- * Project      : Bank Licensing Portal
- * File         : LicenseApplicationRepository.java
- * Author       : Heritier Ntaganira
+ * Project : Bank Licensing Portal
+ * File : LicenseApplicationRepository.java
+ * Author : Heritier Ntaganira
  * Created Date : 2026-05-11
- * Description  : Repository for license application persistence
+ * Description : Repository for license application persistence
  * --------------------------------------------------------------------
  */
 public interface LicenseApplicationRepository
@@ -20,4 +22,7 @@ public interface LicenseApplicationRepository
         Page<LicenseApplication> findByApplicantEmail(
                         String email,
                         Pageable pageable);
+
+        long countByStatus(
+                        ApplicationStatus status);
 }

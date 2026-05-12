@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"> 
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
 
@@ -45,8 +45,7 @@
                                     Total Applications
                                 </h6>
 
-                                <h2 class="fw-bold">
-                                    12
+                                <h2 class="fw-bold" th:text="${stats.totalApplications}">
                                 </h2>
 
                             </div>
@@ -65,8 +64,7 @@
                                     Under Review
                                 </h6>
 
-                                <h2 class="fw-bold text-warning">
-                                    4
+                                <h2 class="fw-bold text-warning" th:text="${stats.underReviewApplications}">
                                 </h2>
 
                             </div>
@@ -85,8 +83,7 @@
                                     Approved
                                 </h6>
 
-                                <h2 class="fw-bold text-success">
-                                    6
+                                <h2 class="fw-bold text-success" th:text="${stats.approvedApplications}">
                                 </h2>
 
                             </div>
@@ -105,8 +102,7 @@
                                     Rejected
                                 </h6>
 
-                                <h2 class="fw-bold text-danger">
-                                    2
+                                <h2 class="fw-bold text-danger" th:text="${stats.rejectedApplications}">
                                 </h2>
 
                             </div>

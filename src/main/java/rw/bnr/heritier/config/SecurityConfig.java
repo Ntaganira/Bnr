@@ -30,89 +30,76 @@ import rw.bnr.heritier.security.JwtAuthenticationFilter;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
+        @Bean
+        public PasswordEncoder passwordEncoder() {
 
-        return new BCryptPasswordEncoder();
-    }
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration configuration
-    ) throws Exception {
+        @Bean
+        public AuthenticationManager authenticationManager(
+                        AuthenticationConfiguration configuration) throws Exception {
 
-        return configuration.getAuthenticationManager();
-    }
+                return configuration.getAuthenticationManager();
+        }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http
-    ) throws Exception {
+        @Bean
+        public SecurityFilterChain securityFilterChain(
+                        HttpSecurity http) throws Exception {
 
-        http
+                http
 
-                .csrf(csrf -> csrf.disable())
+                                .csrf(csrf -> csrf.disable())
 
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.IF_REQUIRED
-                        )
-                )
+                                .sessionManagement(session -> session.sessionCreationPolicy(
+                                                SessionCreationPolicy.IF_REQUIRED))
 
-                .authorizeHttpRequests(auth -> auth
+                                .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers(
-                                "/login",
-                                "/api/auth/**",
-                                "/h2-console/**",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/css/**",
-                                "/js/**",
-                                "/images/**"
-                        )
-                        .permitAll()
+                                                .requestMatchers(
+                                                                "/login",
+                                                                "/api/auth/**",
+                                                                "/h2-console/**",
+                                                                "/swagger-ui/**",
+                                                                "/v3/api-docs/**",
+                                                                "/css/**",
+                                                                "/js/**",
+                                                                "/images/**")
+                                                .permitAll()
 
-                        .anyRequest()
-                        .authenticated()
-                )
+                                                .anyRequest()
+                                                .authenticated())
 
-                .formLogin(form -> form
+                                .formLogin(form -> form
 
-                        .loginPage("/login")
+                                                .loginPage("/login")
 
-                        .defaultSuccessUrl(
-                                "/dashboard",
-                                true
-                        )
+                                                .defaultSuccessUrl(
+                                                                "/dashboard",
+                                                                true)
 
-                        .permitAll()
-                )
+                                                .permitAll())
 
-                .logout(logout -> logout
+                                .logout(logout -> logout
 
-                        .logoutSuccessUrl(
-                                "/login?logout"
-                        )
+                                                .logoutSuccessUrl(
+                                                                "/login?logout")
 
-                        .permitAll()
-                )
+                                                .permitAll())
 
-                .headers(headers -> headers
+                                .headers(headers -> headers
 
-                        .frameOptions(frame ->
-                                frame.disable()
-                        )
-                )
+                                                .frameOptions(frame -> frame.disable()))
+                                .exceptionHandling(ex -> ex
 
-                .addFilterBefore(
-                        jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
+                                                .accessDeniedPage("/error/403"))
+                                .addFilterBefore(
+                                                jwtAuthenticationFilter,
+                                                UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+                return http.build();
+        }
 
 }
