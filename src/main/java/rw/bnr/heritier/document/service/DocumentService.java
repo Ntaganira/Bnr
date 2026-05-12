@@ -10,19 +10,24 @@
 
 package rw.bnr.heritier.document.service;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
+
+import rw.bnr.heritier.document.dto.DocumentResponseDto;
 import rw.bnr.heritier.document.model.ApplicationDocument;
 
 public interface DocumentService {
 
     ApplicationDocument upload(
             Long applicationId,
-            MultipartFile file
-    );
+            MultipartFile file);
 
     void uploadDocument(
             Long applicationId,
             MultipartFile file,
-            String uploaderEmail
-    );
+            String uploaderEmail);
+
+    List<DocumentResponseDto> getDocumentsByApplication(
+            Long applicationId);
 }

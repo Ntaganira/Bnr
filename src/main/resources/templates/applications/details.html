@@ -240,7 +240,7 @@
                                 <div class="d-grid gap-2">
 
                                     <form th:action="@{/applications/{id}/documents(
-        id=${application.id})}" method="post" enctype="multipart/form-data">
+        id=${app.id})}" method="post" enctype="multipart/form-data">
 
                                         <div class="mb-3">
 
@@ -319,12 +319,33 @@
 
                                         <tbody>
 
-                                            <tr>
+                                            <tr th:if="${documents.isEmpty()}">
 
                                                 <td colspan="4" class="text-center text-muted py-4">
 
                                                     No uploaded documents yet.
 
+                                                </td>
+
+                                            </tr>
+
+                                            <tr th:each="doc : ${documents}">
+
+                                                <td th:text="${doc.fileName}">
+                                                </td>
+
+                                                <td>
+
+                                                    <span class="badge bg-secondary"
+                                                        th:text="'v' + ${doc.versionNumber}">
+                                                    </span>
+
+                                                </td>
+
+                                                <td th:text="${doc.uploadedBy}">
+                                                </td>
+
+                                                <td th:text="${doc.uploadedAt}">
                                                 </td>
 
                                             </tr>

@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import rw.bnr.heritier.application.model.LicenseApplication;
 import rw.bnr.heritier.application.repository.LicenseApplicationRepository;
 import rw.bnr.heritier.common.security.SecurityUtils;
+import rw.bnr.heritier.document.dto.DocumentResponseDto;
+import rw.bnr.heritier.document.mapper.DocumentMapper;
 import rw.bnr.heritier.document.model.ApplicationDocument;
 import rw.bnr.heritier.document.repository.ApplicationDocumentRepository;
 import rw.bnr.heritier.document.service.DocumentService;
@@ -28,6 +30,7 @@ import rw.bnr.heritier.user.repository.UserRepository;
 import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -38,6 +41,7 @@ public class DocumentServiceImpl implements DocumentService {
         private final ApplicationDocumentRepository repository;
         private final LicenseApplicationRepository applicationRepository;
         private final UserRepository userRepository;
+        private final DocumentMapper mapper;
 
         @Value("${app.upload-dir}")
         private String uploadDir;
@@ -77,6 +81,16 @@ public class DocumentServiceImpl implements DocumentService {
                                 .build();
 
                 return repository.save(document);
+        }
+
+        @Override
+        public List<DocumentResponseDto> getDocumentsByApplication(
+                        Long applicationId) {
+
+                return repository.findByApplicationId(applicationId)
+                                .stream()
+                                .map(mapper::toResponse)
+                                .toList();
         }
 
         private void validateFile(MultipartFile file) {
