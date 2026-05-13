@@ -2,6 +2,9 @@ package rw.bnr.heritier.audit.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import rw.bnr.heritier.audit.dto.AuditLogResponseDto;
 
 /**
@@ -25,4 +28,6 @@ public interface AuditLogService {
     List<AuditLogResponseDto> getApplicationAuditLogs(
             Long applicationId);
 
+    Page<AuditLogResponseDto> getAuditLogs(
+            Pageable pageable);
 }

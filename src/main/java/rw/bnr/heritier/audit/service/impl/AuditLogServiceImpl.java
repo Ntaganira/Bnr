@@ -8,6 +8,8 @@ import rw.bnr.heritier.audit.mapper.AuditLogMapper;
 import rw.bnr.heritier.audit.model.AuditLog;
 import rw.bnr.heritier.audit.repository.AuditLogRepository;
 import rw.bnr.heritier.audit.service.AuditLogService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -60,5 +62,15 @@ public class AuditLogServiceImpl
                                 .stream()
                                 .map(mapper::toResponse)
                                 .toList();
+        }
+
+        @Override
+        public Page<AuditLogResponseDto> getAuditLogs(
+                        Pageable pageable) {
+
+                return repository
+                                .findAllByOrderByTimestampDesc(
+                                                pageable)
+                                .map(mapper::toResponse);
         }
 }
