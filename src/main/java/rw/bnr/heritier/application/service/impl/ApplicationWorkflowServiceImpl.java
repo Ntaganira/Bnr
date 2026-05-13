@@ -191,6 +191,38 @@ public class ApplicationWorkflowServiceImpl
                 return saved;
         }
 
+        @Override
+        @Transactional
+        public void completeReview(
+                        Long applicationId,
+                        User reviewer) {
+
+                LicenseApplication application = repository.findById(applicationId)
+                                .orElseThrow(() -> new BusinessException(
+                                                "Application not found"));
+
+                validateTransition(
+                                application.getStatus(),
+                                ApplicationStatus.REVIEW_COMPLETED);
+
+                application.setStatus(
+                                ApplicationStatus.REVIEW_COMPLETED);
+
+                repository.save(application);
+
+                auditLogService.log(
+
+                                application.getId(),
+
+                                reviewer.getEmail(),
+
+                                "COMPLETE_REVIEW",
+
+                                ApplicationStatus.UNDER_REVIEW.name(),
+
+                                ApplicationStatus.REVIEW_COMPLETED.name());
+        }
+
         private void validateTransition(
                         ApplicationStatus current,
                         ApplicationStatus target) {

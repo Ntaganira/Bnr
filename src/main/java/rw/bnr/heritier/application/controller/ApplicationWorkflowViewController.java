@@ -10,129 +10,145 @@ import rw.bnr.heritier.application.service.ApplicationWorkflowService;
 import rw.bnr.heritier.exception.BusinessException;
 import rw.bnr.heritier.user.model.User;
 import rw.bnr.heritier.user.repository.UserRepository;
+
 /**
  * --------------------------------------------------------------------
- * Project      : Bank Licensing Portal
- * File         : ApplicationWorkflowViewController.java
- * Author       : Heritier Ntaganira
+ * Project : Bank Licensing Portal
+ * File : ApplicationWorkflowViewController.java
+ * Author : Heritier Ntaganira
  * Created Date : 2026-05-12
- * Description  : Handles workflow actions from Thymeleaf views
+ * Description : Handles workflow actions from Thymeleaf views
  * --------------------------------------------------------------------
  */
 @Controller
 @RequiredArgsConstructor
 public class ApplicationWorkflowViewController {
 
-    private final ApplicationWorkflowService workflowService;
+        private final ApplicationWorkflowService workflowService;
 
-    private final UserRepository userRepository;
+        private final UserRepository userRepository;
 
-    @PostMapping("/applications/{id}/review")
-    public String reviewApplication(
-            @PathVariable Long id,
-            Authentication authentication,
-            RedirectAttributes redirectAttributes
-    ) {
+        @PostMapping("/applications/{id}/review")
+        public String reviewApplication(
+                        @PathVariable Long id,
+                        Authentication authentication,
+                        RedirectAttributes redirectAttributes) {
 
-        try {
+                try {
 
-            User reviewer = getCurrentUser(authentication);
+                        User reviewer = getCurrentUser(authentication);
 
-            workflowService.startReview(
-                    id,
-                    reviewer
-            );
+                        workflowService.startReview(
+                                        id,
+                                        reviewer);
 
-            redirectAttributes.addFlashAttribute(
-                    "success",
-                    "Application moved to review successfully."
-            );
+                        redirectAttributes.addFlashAttribute(
+                                        "success",
+                                        "Application moved to review successfully.");
 
-        } catch (BusinessException ex) {
+                } catch (BusinessException ex) {
 
-            redirectAttributes.addFlashAttribute(
-                    "error",
-                    ex.getMessage()
-            );
+                        redirectAttributes.addFlashAttribute(
+                                        "error",
+                                        ex.getMessage());
+                }
+
+                return "redirect:/applications/" + id;
         }
 
-        return "redirect:/applications/" + id;
-    }
+        @PostMapping("/applications/{id}/approve")
+        public String approveApplication(
+                        @PathVariable Long id,
+                        Authentication authentication,
+                        RedirectAttributes redirectAttributes) {
 
-    @PostMapping("/applications/{id}/approve")
-    public String approveApplication(
-            @PathVariable Long id,
-            Authentication authentication,
-            RedirectAttributes redirectAttributes
-    ) {
+                try {
 
-        try {
+                        User approver = getCurrentUser(authentication);
 
-            User approver = getCurrentUser(authentication);
+                        workflowService.approve(
+                                        id,
+                                        approver);
 
-            workflowService.approve(
-                    id,
-                    approver
-            );
+                        redirectAttributes.addFlashAttribute(
+                                        "success",
+                                        "Application approved successfully.");
 
-            redirectAttributes.addFlashAttribute(
-                    "success",
-                    "Application approved successfully."
-            );
+                } catch (BusinessException ex) {
 
-        } catch (BusinessException ex) {
+                        redirectAttributes.addFlashAttribute(
+                                        "error",
+                                        ex.getMessage());
+                }
 
-            redirectAttributes.addFlashAttribute(
-                    "error",
-                    ex.getMessage()
-            );
+                return "redirect:/applications/" + id;
         }
 
-        return "redirect:/applications/" + id;
-    }
+        @PostMapping("/applications/{id}/reject")
+        public String rejectApplication(
+                        @PathVariable Long id,
+                        Authentication authentication,
+                        RedirectAttributes redirectAttributes) {
 
-    @PostMapping("/applications/{id}/reject")
-    public String rejectApplication(
-            @PathVariable Long id,
-            Authentication authentication,
-            RedirectAttributes redirectAttributes
-    ) {
+                try {
 
-        try {
+                        User approver = getCurrentUser(authentication);
 
-            User approver = getCurrentUser(authentication);
+                        workflowService.reject(
+                                        id,
+                                        approver);
 
-            workflowService.reject(
-                    id,
-                    approver
-            );
+                        redirectAttributes.addFlashAttribute(
+                                        "success",
+                                        "Application rejected successfully.");
 
-            redirectAttributes.addFlashAttribute(
-                    "success",
-                    "Application rejected successfully."
-            );
+                } catch (BusinessException ex) {
 
-        } catch (BusinessException ex) {
+                        redirectAttributes.addFlashAttribute(
+                                        "error",
+                                        ex.getMessage());
+                }
 
-            redirectAttributes.addFlashAttribute(
-                    "error",
-                    ex.getMessage()
-            );
+                return "redirect:/applications/" + id;
         }
 
-        return "redirect:/applications/" + id;
-    }
+        private User getCurrentUser(
+                        Authentication authentication) {
 
-    private User getCurrentUser(
-            Authentication authentication
-    ) {
+                return userRepository.findByEmail(
+                                authentication.getName()).orElseThrow(
+                                                () -> new BusinessException(
+                                                                "Authenticated user not found"));
+        }
 
-        return userRepository.findByEmail(
-                authentication.getName()
-        ).orElseThrow(() ->
-                new BusinessException(
-                        "Authenticated user not found"
-                ));
-    }
+        @PostMapping("/applications/{id}/complete-review")
+        public String completeReview(
 
+                        @PathVariable Long id,
+
+                        Authentication authentication,
+
+                        RedirectAttributes redirectAttributes) {
+
+                try {
+
+                        User reviewer = getCurrentUser(authentication);
+
+                        workflowService.completeReview(
+                                        id,
+                                        reviewer);
+
+                        redirectAttributes.addFlashAttribute(
+                                        "success",
+                                        "Review completed successfully.");
+
+                } catch (BusinessException ex) {
+
+                        redirectAttributes.addFlashAttribute(
+                                        "error",
+                                        ex.getMessage());
+                }
+
+                return "redirect:/applications/" + id;
+        }
 }

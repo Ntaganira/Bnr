@@ -5,8 +5,7 @@
 
     <meta charset="UTF-8">
 
-    <title>
-        Internal Server Error
+    <title th:text="${message != null ? message : 'Page not Found'}">
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,32 +18,54 @@
 
 <body class="bg-light">
 
+    <div th:replace="fragments/navbar :: navbar"></div>
+
     <div class="container-fluid vh-100">
 
         <div class="row h-100 align-items-center">
 
             <div class="col-12 text-center">
 
-                <h1 class="display-1 fw-bold" style="color: #c28763;">
+                <div class="d-flex
+                        justify-content-center
+                        align-items-center
+                        flex-wrap
+                        gap-4">
 
-                    500
+                    <h1 class="display-1 fw-bold" style="color: #c28763;">
 
-                </h1>
+                        500
 
-                <h2 style="color: #5a2d0c;">
+                    </h1>
 
-                    Internal Server Error
+                    <div style="
+                        width: 4px;
+                        height: 150px;
+                        background-color: #5a2d0c;">
+                    </div>
 
-                </h2>
+                    <div class="text-start">
 
-                <p class="text-muted mt-3">
+                        <h1 class="display-4 fw-light" style="color: #5a2d0c;">
 
-                    Something went wrong while
-                    processing your request.
+                            Internal Server Error !
 
-                </p>
+                        </h1>
 
-                <div class="mt-4">
+                        <p style="color: #c28763;">
+
+
+                            Something went wrong while
+                            processing your request.
+
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="mt-5">
 
                     <a th:href="@{/dashboard}" class="btn btn-outline-secondary px-4">
 

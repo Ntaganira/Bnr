@@ -161,7 +161,7 @@
 
                                     <div class="col-md-8">
 
-                                        <span th:text="${app.reviewerEmail != null ? application.reviewerEmail : '-'}">
+                                        <span th:text="${app.reviewerEmail != null ? app.reviewerEmail : '-'}">
                                         </span>
 
                                     </div>
@@ -180,7 +180,7 @@
 
                                     <div class="col-md-8">
 
-                                        <span th:text="${app.approverEmail != null ? application.approverEmail : '-'}">
+                                        <span th:text="${app.approverEmail != null ? app.approverEmail : '-'}">
                                         </span>
 
                                     </div>
@@ -229,7 +229,7 @@
                                     <span class="badge px-4 py-3 fs-6" th:classappend="
                                         ${app.status == 'APPROVED'} ? ' bg-success' :
                                         (${app.status == 'REJECTED'} ? ' bg-danger' :
-                                        (${app.status == 'UNDER_REVIEW'} ? ' bg-warning text-dark' :
+                                        (${app.status == 'REVIEW_COMPLETED'} ? ' bg-warning text-dark' :
                                         (${app.status == 'SUBMITTED'} ? ' bg-primary' :
                                         ' bg-secondary')))" th:text="${app.status}">
                                     </span>
@@ -257,11 +257,15 @@
 
                                     </form>
 
-                                    <button class="btn btn-outline-secondary">
+
+                                    <a href="#auditTrail" class="btn btn-outline-secondary">
+
+                                        <i class="bi bi-clock-history me-2">
+                                        </i>
 
                                         View Audit Trail
 
-                                    </button>
+                                    </a>
 
                                 </div>
 
@@ -273,7 +277,7 @@
 
                     <!-- DOCUMENTS SECTION -->
 
-                    <div class="col-12">
+                    <div class="col-8">
 
                         <div class="card card-custom shadow-sm">
 
@@ -380,6 +384,96 @@
                                         </tbody>
 
                                     </table>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-4">
+
+                        <div class="card card-custom shadow-sm">
+
+                            <div class="card-body p-4">
+
+                                <h5 class="fw-bold mb-4">
+
+                                    Workflow Actions
+
+                                </h5>
+
+                                <div class="d-grid gap-3">
+
+                                    <!-- START REVIEW -->
+
+                                    <form th:if="${app.status == 'SUBMITTED'}"
+                                        sec:authorize="hasRole('REVIEWER')" th:action="@{/applications/{id}/review(
+                            id=${app.id})}" method="post">
+
+                                        <button type="submit" class="btn btn-warning w-100">
+
+                                            <i class="bi bi-search me-2">
+                                            </i>
+
+                                            Start Review
+
+                                        </button>
+
+                                    </form>
+
+                                    <!-- COMPLETE REVIEW -->
+
+                                    <form th:if="${app.status == 'UNDER_REVIEW'}"
+                                        sec:authorize="hasRole('REVIEWER')" th:action="@{/applications/{id}/complete-review(
+                            id=${app.id})}" method="post">
+
+                                        <button type="submit" class="btn btn-primary w-100">
+
+                                            <i class="bi bi-check2-square me-2">
+                                            </i>
+
+                                            Complete Review
+
+                                        </button>
+
+                                    </form>
+
+                                    <!-- APPROVE -->
+
+                                    <form th:if="${app.status == 'REVIEW_COMPLETED'}"
+                                        sec:authorize="hasRole('APPROVER')" th:action="@{/applications/{id}/approve(
+                            id=${app.id})}" method="post">
+
+                                        <button type="submit" class="btn btn-success w-100">
+
+                                            <i class="bi bi-check-circle me-2">
+                                            </i>
+
+                                            Approve Application
+
+                                        </button>
+
+                                    </form>
+
+                                    <!-- REJECT -->
+
+                                    <form th:if="${app.status == 'REVIEW_COMPLETED'}"
+                                        sec:authorize="hasRole('APPROVER')" th:action="@{/applications/{id}/reject(
+                            id=${app.id})}" method="post">
+
+                                        <button type="submit" class="btn btn-danger w-100">
+
+                                            <i class="bi bi-x-circle me-2">
+                                            </i>
+
+                                            Reject Application
+
+                                        </button>
+
+                                    </form>
 
                                 </div>
 

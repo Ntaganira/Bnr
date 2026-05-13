@@ -5,25 +5,25 @@ import rw.bnr.heritier.user.model.User;
 
 public interface ApplicationWorkflowService {
 
-    LicenseApplication submit(Long id);
+        LicenseApplication submit(Long id);
 
-    LicenseApplication startReview(
-            Long id,
-            User reviewer
-    );
+        LicenseApplication startReview(
+                        Long id,
+                        User reviewer);
 
-    LicenseApplication requestMoreInfo(Long id);
+        LicenseApplication requestMoreInfo(Long id);
 
-    LicenseApplication completeReview(Long id);
+        LicenseApplication completeReview(Long id);
 
-    LicenseApplication approve(
-            Long id,
-            User approver
-    );
+        LicenseApplication approve(
+                        Long id,
+                        User approver);
 
-    LicenseApplication reject(
-            Long id,
-            User approver
-    );
+        LicenseApplication reject(
+                        Long id,
+                        User approver);
 
+        void completeReview(
+                        Long applicationId,
+                        User reviewer);
 }
