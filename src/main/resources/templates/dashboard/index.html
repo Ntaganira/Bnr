@@ -72,7 +72,47 @@
                         </div>
 
                     </div>
+                    <div class="col-lg-6">
 
+                        <div class="card card-custom shadow-sm">
+
+                            <div class="card-body p-4">
+
+                                <div class="d-flex
+                            justify-content-between
+                            align-items-center
+                            mb-4">
+
+                                    <div>
+
+                                        <h5 class="fw-bold mb-1">
+
+                                            Application Status Distribution
+
+                                        </h5>
+
+                                        <small class="text-muted">
+
+                                            Workflow overview across all applications
+
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                                <div style="height: 350px;">
+
+                                    <canvas id="statusChart">
+                                    </canvas>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
                     <div class="col-md-3">
 
                         <div class="card shadow-sm border-0">
@@ -91,6 +131,7 @@
                         </div>
 
                     </div>
+                    <div class="col-md-3"></div>
 
                     <div class="col-md-3">
 
@@ -112,7 +153,6 @@
                     </div>
 
                 </div>
-
             </div>
 
         </div>
@@ -122,5 +162,89 @@
     <div th:replace="fragments/footer :: footer"></div>
 
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js">
+</script>
+<script th:inline="javascript">
+
+    const submitted =
+    /*[[${stats.submittedApplications}]]*/ 0;
+
+    const underReview =
+        /*[[${ stats.underReviewApplications }]]*/ 0;
+
+    const approved =
+       /* [[${ stats.approvedApplications }]]*/ 0;
+
+    const rejected =
+       /* [[${ stats.rejectedApplications }]]*/ 0;
+
+    const ctx =
+        document.getElementById(
+            'statusChart'
+        );
+
+    new Chart(ctx, {
+
+        type: 'doughnut',
+
+        data: {
+
+            labels: [
+
+                'Submitted',
+                'Under Review',
+                'Approved',
+                'Rejected'
+
+            ],
+
+            datasets: [{
+
+                data: [
+
+                    submitted,
+                    underReview,
+                    approved,
+                    rejected
+
+                ],
+
+                backgroundColor: [
+
+                    '#8B4513',
+                    '#D4A017',
+                    '#198754',
+                    '#DC3545'
+
+                ],
+
+                borderWidth: 1
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    position: 'bottom'
+
+                }
+
+            }
+
+        }
+
+    });
+
+</script>
 
 </html>

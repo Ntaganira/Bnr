@@ -1,3 +1,7 @@
+package rw.bnr.heritier.dashboard.dto;
+
+import lombok.Builder;
+import lombok.Data;
 /**
  * --------------------------------------------------------------------
  * Project      : Bank Licensing Portal
@@ -7,12 +11,6 @@
  * Description  : Represents dashboard statistics
  * --------------------------------------------------------------------
  */
-
-package rw.bnr.heritier.dashboard.dto;
-
-import lombok.Builder;
-import lombok.Data;
-
 @Data
 @Builder
 public class DashboardStatsDto {
