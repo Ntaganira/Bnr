@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
 
     <title>
-        Page Not Found
+        <span th:text="${message != null ? message : 'Page not Found'}">
+        </span>
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -51,11 +52,12 @@
 
                         </h1>
 
-                        <h2 style="color: #c28763;">
+                        <h3 style="color: #c28763;">
 
-                            Page not Found
+                            <span th:text="${message != null ? message : 'Page not Found'}">
+                            </span>
 
-                        </h2>
+                        </h3>
 
                     </div>
 
