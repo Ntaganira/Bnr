@@ -35,18 +35,103 @@
 
                 <div class="row g-4">
 
-                    <div class="col-md-3">
+                    <!-- LEFT SIDE -->
 
-                        <div class="card shadow-sm border-0">
+                    <div class="col-lg-7">
 
-                            <div class="card-body">
+                        <div class="row g-4 mt-0">
 
-                                <h6 class="text-muted">
-                                    Total Applications
-                                </h6>
+                            <!-- TOTAL -->
 
-                                <h2 class="fw-bold" th:text="${stats.totalApplications}">
-                                </h2>
+                            <div class="col-md-6">
+
+                                <div class="card card-custom shadow-sm h-100">
+
+                                    <div class="card-body">
+
+                                        <small class="text-muted fw-semibold">
+
+                                            Total Applications
+
+                                        </small>
+
+                                        <h2 class="fw-bold mt-2" style="color: #8B4513;"
+                                            th:text="${stats.totalApplications}">
+                                        </h2>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- REVIEW -->
+
+                            <div class="col-md-6">
+
+                                <div class="card card-custom shadow-sm h-100">
+
+                                    <div class="card-body">
+
+                                        <small class="text-muted fw-semibold">
+
+                                            Under Review
+
+                                        </small>
+
+                                        <h2 class="fw-bold mt-2 text-warning"
+                                            th:text="${stats.underReviewApplications}">
+                                        </h2>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- APPROVED -->
+
+                            <div class="col-md-6">
+
+                                <div class="card card-custom shadow-sm h-100">
+
+                                    <div class="card-body">
+
+                                        <small class="text-muted fw-semibold">
+
+                                            Approved
+
+                                        </small>
+
+                                        <h2 class="fw-bold mt-2 text-success" th:text="${stats.approvedApplications}">
+                                        </h2>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- REJECTED -->
+
+                            <div class="col-md-6">
+
+                                <div class="card card-custom shadow-sm h-100">
+
+                                    <div class="card-body">
+
+                                        <small class="text-muted fw-semibold">
+
+                                            Rejected
+
+                                        </small>
+
+                                        <h2 class="fw-bold mt-2 text-danger" th:text="${stats.rejectedApplications}">
+                                        </h2>
+
+                                    </div>
+
+                                </div>
 
                             </div>
 
@@ -54,27 +139,11 @@
 
                     </div>
 
-                    <div class="col-md-3">
+                    <!-- RIGHT SIDE -->
 
-                        <div class="card shadow-sm border-0">
+                    <div class="col-lg-5">
 
-                            <div class="card-body">
-
-                                <h6 class="text-muted">
-                                    Under Review
-                                </h6>
-
-                                <h2 class="fw-bold text-warning" th:text="${stats.underReviewApplications}">
-                                </h2>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <div class="col-lg-6">
-
-                        <div class="card card-custom shadow-sm">
+                        <div class="card card-custom shadow-sm h-100">
 
                             <div class="card-body p-4">
 
@@ -101,50 +170,14 @@
 
                                 </div>
 
-                                <div style="height: 350px;">
+                                <div style="
+                        height: 320px;
+                        position: relative;">
 
                                     <canvas id="statusChart">
                                     </canvas>
 
                                 </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <div class="col-md-3">
-
-                        <div class="card shadow-sm border-0">
-
-                            <div class="card-body">
-
-                                <h6 class="text-muted">
-                                    Approved
-                                </h6>
-
-                                <h2 class="fw-bold text-success" th:text="${stats.approvedApplications}">
-                                </h2>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <div class="col-md-3"></div>
-
-                    <div class="col-md-3">
-
-                        <div class="card shadow-sm border-0">
-
-                            <div class="card-body">
-
-                                <h6 class="text-muted">
-                                    Rejected
-                                </h6>
-
-                                <h2 class="fw-bold text-danger" th:text="${stats.rejectedApplications}">
-                                </h2>
 
                             </div>
 
