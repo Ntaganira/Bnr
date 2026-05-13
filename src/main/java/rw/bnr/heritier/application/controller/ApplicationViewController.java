@@ -5,9 +5,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import rw.bnr.heritier.application.dto.ApplicationResponseDto;
+import rw.bnr.heritier.application.dto.CreateApplicationRequest;
 import rw.bnr.heritier.application.service.ApplicationQueryService;
+import rw.bnr.heritier.application.service.impl.ApplicationWorkflowServiceImpl;
 import rw.bnr.heritier.audit.service.AuditLogService;
 import rw.bnr.heritier.document.model.ApplicationDocument;
 import rw.bnr.heritier.document.service.DocumentService;
@@ -37,6 +44,7 @@ public class ApplicationViewController {
         private final ApplicationQueryService queryService;
         private final DocumentService documentService;
         private final AuditLogService auditLogService;
+        private final ApplicationWorkflowServiceImpl applicationWorkflowServiceImpl;
 
         @GetMapping("/applications")
         public String applications(
@@ -108,4 +116,51 @@ public class ApplicationViewController {
                                         "Failed to download document");
                 }
         }
+
+        @GetMapping("/applications/new")
+        public String newApplicationForm(
+                        Model model) {
+
+                model.addAttribute(
+                                "request",
+                                new CreateApplicationRequest());
+
+                return "applications/new";
+        }
+
+                @PostMapping("/applications")
+public String createApplication(
+
+        @Valid
+        @ModelAttribute("request")
+        CreateApplicationRequest request,
+
+        BindingResult bindingResult,
+
+        Authentication authentication,
+
+        RedirectAttributes redirectAttributes,
+
+        Model model
+) {
+
+    if (bindingResult.hasErrors()) {
+
+        return "applications/new";
+    }
+
+    Long applicationId =
+            applicationWorkflowServiceImpl.createApplication(
+                    request,
+                    authentication.getName()
+            );
+
+    redirectAttributes.addFlashAttribute(
+            "success",
+            "Application created successfully."
+    );
+
+    return "redirect:/applications/" + applicationId;
+}
+
 }

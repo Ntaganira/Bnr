@@ -1,5 +1,6 @@
 package rw.bnr.heritier.application.service;
 
+import rw.bnr.heritier.application.dto.CreateApplicationRequest;
 import rw.bnr.heritier.application.model.LicenseApplication;
 import rw.bnr.heritier.user.model.User;
 
@@ -26,4 +27,12 @@ public interface ApplicationWorkflowService {
         void completeReview(
                         Long applicationId,
                         User reviewer);
+
+        Long createApplication(
+                        CreateApplicationRequest request,
+                        String applicantEmail);
+
+        void submit(
+                        Long applicationId,
+                        User applicant);
 }

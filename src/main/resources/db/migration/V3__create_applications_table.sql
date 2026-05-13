@@ -14,7 +14,7 @@ CREATE TABLE applications (
 
     approver_id BIGINT,
 
-    submitted_at TIMESTAMP NOT NULL,
+    submitted_at TIMESTAMP,
 
     version BIGINT,
 

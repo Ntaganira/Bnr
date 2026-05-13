@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 
 import rw.bnr.heritier.application.dto.ApplicationResponseDto;
 import rw.bnr.heritier.application.mapper.ApplicationMapper;
-import rw.bnr.heritier.application.model.LicenseApplication;
 import rw.bnr.heritier.application.service.ApplicationWorkflowService;
 import rw.bnr.heritier.common.security.SecurityUtils;
 import rw.bnr.heritier.user.model.User;

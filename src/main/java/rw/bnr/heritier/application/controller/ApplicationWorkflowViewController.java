@@ -151,4 +151,35 @@ public class ApplicationWorkflowViewController {
 
                 return "redirect:/applications/" + id;
         }
+
+        @PostMapping("/applications/{id}/submit")
+        public String submitApplication(
+
+                        @PathVariable Long id,
+
+                        Authentication authentication,
+
+                        RedirectAttributes redirectAttributes) {
+
+                try {
+
+                        User applicant = getCurrentUser(authentication);
+
+                        workflowService.submit(
+                                        id,
+                                        applicant);
+
+                        redirectAttributes.addFlashAttribute(
+                                        "success",
+                                        "Application submitted successfully.");
+
+                } catch (BusinessException ex) {
+
+                        redirectAttributes.addFlashAttribute(
+                                        "error",
+                                        ex.getMessage());
+                }
+
+                return "redirect:/applications/" + id;
+        }
 }

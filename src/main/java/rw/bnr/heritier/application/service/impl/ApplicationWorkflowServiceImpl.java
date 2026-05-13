@@ -1,8 +1,13 @@
 package rw.bnr.heritier.application.service.impl;
 
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import rw.bnr.heritier.application.dto.CreateApplicationRequest;
 import rw.bnr.heritier.application.model.LicenseApplication;
 import rw.bnr.heritier.application.repository.LicenseApplicationRepository;
 import rw.bnr.heritier.application.service.ApplicationWorkflowService;
@@ -10,6 +15,7 @@ import rw.bnr.heritier.application.workflow.ApplicationStatus;
 import rw.bnr.heritier.exception.BusinessException;
 import rw.bnr.heritier.role.Role;
 import rw.bnr.heritier.user.model.User;
+import rw.bnr.heritier.user.repository.UserRepository;
 import rw.bnr.heritier.audit.service.AuditLogService;
 
 /**
@@ -30,6 +36,7 @@ public class ApplicationWorkflowServiceImpl
 
         private final LicenseApplicationRepository repository;
         private final AuditLogService auditLogService;
+        private final UserRepository userRepository;
 
         @Override
         public LicenseApplication submit(Long id) {
@@ -221,6 +228,97 @@ public class ApplicationWorkflowServiceImpl
                                 ApplicationStatus.UNDER_REVIEW.name(),
 
                                 ApplicationStatus.REVIEW_COMPLETED.name());
+        }
+
+        @Override
+        @Transactional
+        public Long createApplication(
+                        CreateApplicationRequest request,
+                        String applicantEmail) {
+
+                User applicant = userRepository.findByEmail(applicantEmail)
+                                .orElseThrow(() -> new BusinessException(
+                                                "Applicant not found"));
+
+                LicenseApplication application = LicenseApplication.builder()
+
+                                .applicationNumber(
+                                                generateApplicationNumber())
+
+                                .institutionName(
+                                                request.getInstitutionName())
+
+                                .institutionType(
+                                                request.getInstitutionType())
+
+                                .registrationNumber(
+                                                request.getRegistrationNumber())
+
+                                .businessDescription(
+                                                request.getBusinessDescription())
+
+                                .status(
+                                                ApplicationStatus.DRAFT)
+
+                                .applicant(applicant)
+
+                                .build();
+
+                LicenseApplication saved = repository.save(application);
+
+                return saved.getId();
+        }
+
+        private String generateApplicationNumber() {
+
+                long count = repository.count() + 1;
+
+                return String.format(
+                                "APP-2026-%03d",
+                                count);
+        }
+
+        @Override
+        @Transactional
+        public void submit(
+                        Long applicationId,
+                        User applicant) {
+
+                LicenseApplication application = repository.findById(applicationId)
+                                .orElseThrow(() -> new BusinessException(
+                                                "Application not found"));
+
+                if (!application.getApplicant()
+                                .getId()
+                                .equals(applicant.getId())) {
+
+                        throw new BusinessException(
+                                        "You are not allowed to submit this application");
+                }
+
+                validateTransition(
+                                application.getStatus(),
+                                ApplicationStatus.SUBMITTED);
+
+                application.setStatus(
+                                ApplicationStatus.SUBMITTED);
+
+                application.setSubmittedAt(
+                                LocalDateTime.now());
+
+                repository.save(application);
+
+                auditLogService.log(
+
+                                application.getId(),
+
+                                applicant.getEmail(),
+
+                                "SUBMIT_APPLICATION",
+
+                                ApplicationStatus.DRAFT.name(),
+
+                                ApplicationStatus.SUBMITTED.name());
         }
 
         private void validateTransition(

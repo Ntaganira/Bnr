@@ -45,6 +45,13 @@ public class LicenseApplication {
     @Column(nullable = false)
     private LocalDateTime submittedAt;
 
+    private String institutionType;
+
+    private String registrationNumber;
+
+    @Column(length = 2000)
+    private String businessDescription;
+    
     @Version
     private Long version;
 

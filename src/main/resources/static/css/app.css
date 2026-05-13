@@ -104,3 +104,47 @@ h1, h2,h3,h4,h5,h6{
 .bi{
     color: var(--primary-dark)!important;
 }
+
+/* STATUS BADGES */
+
+.status-draft {
+
+    background-color: #6c757d;
+    color: white;
+
+}
+
+.status-submitted {
+
+    background-color: #8B4513;
+    color: white;
+
+}
+
+.status-under-review {
+
+    background-color: #a47c15bd;
+    color: white;
+
+}
+
+.status-review-completed {
+
+    background-color: #27508ed8;
+    color: white;
+
+}
+
+.status-approved {
+
+    background-color: #11643fbe;
+    color: white;
+
+}
+
+.status-rejected {
+
+    background-color: #dc3545;
+    color: white;
+
+}
