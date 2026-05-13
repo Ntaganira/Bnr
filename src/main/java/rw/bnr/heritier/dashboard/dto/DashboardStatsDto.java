@@ -2,13 +2,14 @@ package rw.bnr.heritier.dashboard.dto;
 
 import lombok.Builder;
 import lombok.Data;
+
 /**
  * --------------------------------------------------------------------
- * Project      : Bank Licensing Portal
- * File         : DashboardStatsDto.java
- * Author       : Heritier Ntaganira
+ * Project : Bank Licensing Portal
+ * File : DashboardStatsDto.java
+ * Author : Heritier Ntaganira
  * Created Date : 2026-05-12
- * Description  : Represents dashboard statistics
+ * Description : Represents dashboard statistics
  * --------------------------------------------------------------------
  */
 @Data
@@ -24,5 +25,8 @@ public class DashboardStatsDto {
     private long approvedApplications;
 
     private long rejectedApplications;
+    
+    private long pendingReviewApplications;
 
+    private long pendingApprovalApplications;
 }
